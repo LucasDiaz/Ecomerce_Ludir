@@ -1,0 +1,6 @@
+@Ecomerce_Ludir_HostAddress = http://localhost:5101
+
+GET {{Ecomerce_Ludir_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
