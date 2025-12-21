@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContextEcomerce))]
-    [Migration("20251221034345_NuevaMigracion")]
+    [Migration("20251221165903_NuevaMigracion")]
     partial class NuevaMigracion
     {
         /// <inheritdoc />
@@ -117,6 +117,21 @@ namespace Infrastructure.Migrations
                     b.ToTable("bibliotecas", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.BibliotecaProduct", b =>
+                {
+                    b.Property<Guid>("BibliotecaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("BibliotecaId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("biblioteca_products", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Cart", b =>
                 {
                     b.Property<Guid>("CartId")
@@ -129,8 +144,8 @@ namespace Infrastructure.Migrations
                     b.Property<Guid?>("InvoiceId")
                         .HasColumnType("uuid");
 
-                    b.Property<float>("TotalPrice")
-                        .HasColumnType("real");
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
 
                     b.HasKey("CartId");
 
@@ -138,6 +153,33 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("carts", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.CartItem", b =>
+                {
+                    b.Property<Guid>("CartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric(10,2)");
+
+                    b.HasKey("CartItemId");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("cart_items", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Invoice", b =>
@@ -342,6 +384,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("Domain.Entities.BibliotecaProduct", b =>
+                {
+                    b.HasOne("Domain.Entities.Biblioteca", "Biblioteca")
+                        .WithMany("BibliotecaProductos")
+                        .HasForeignKey("BibliotecaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Biblioteca");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Domain.Entities.Cart", b =>
                 {
                     b.HasOne("Domain.Entities.Client", "Client")
@@ -351,6 +412,25 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("Domain.Entities.CartItem", b =>
+                {
+                    b.HasOne("Domain.Entities.Cart", "Cart")
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Domain.Entities.Invoice", b =>
@@ -389,12 +469,16 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Biblioteca", b =>
                 {
+                    b.Navigation("BibliotecaProductos");
+
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Domain.Entities.Cart", b =>
                 {
                     b.Navigation("Invoice");
+
+                    b.Navigation("Items");
 
                     b.Navigation("Products");
                 });

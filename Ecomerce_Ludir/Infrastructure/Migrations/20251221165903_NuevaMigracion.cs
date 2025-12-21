@@ -93,7 +93,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     CartId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TotalPrice = table.Column<float>(type: "real", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
                     ClientId = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -173,11 +173,77 @@ namespace Infrastructure.Migrations
                         principalColumn: "InvoiceId");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "biblioteca_products",
+                columns: table => new
+                {
+                    BibliotecaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_biblioteca_products", x => new { x.BibliotecaId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_biblioteca_products_bibliotecas_BibliotecaId",
+                        column: x => x.BibliotecaId,
+                        principalTable: "bibliotecas",
+                        principalColumn: "BibliotecaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_biblioteca_products_products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "cart_items",
+                columns: table => new
+                {
+                    CartItemId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CartId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "numeric(10,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cart_items", x => x.CartItemId);
+                    table.ForeignKey(
+                        name: "FK_cart_items_carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "carts",
+                        principalColumn: "CartId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_cart_items_products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_biblioteca_products_ProductId",
+                table: "biblioteca_products",
+                column: "ProductId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_bibliotecas_CompanyId",
                 table: "bibliotecas",
                 column: "CompanyId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_cart_items_CartId",
+                table: "cart_items",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_cart_items_ProductId",
+                table: "cart_items",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_carts_ClientId",
@@ -217,6 +283,12 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "admins");
+
+            migrationBuilder.DropTable(
+                name: "biblioteca_products");
+
+            migrationBuilder.DropTable(
+                name: "cart_items");
 
             migrationBuilder.DropTable(
                 name: "products");

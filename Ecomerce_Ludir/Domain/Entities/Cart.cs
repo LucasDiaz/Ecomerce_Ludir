@@ -10,7 +10,7 @@ namespace Domain.Entities
     {
         public Guid CartId { get; set; }
         public List<Product> Products { get; set; }
-        public float TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
 
         // Relación con Client
         public Guid ClientId { get; set; }
@@ -19,6 +19,11 @@ namespace Domain.Entities
         // Relación con Invoice
         public Guid? InvoiceId { get; set; }
         public Invoice? Invoice { get; set; }
+
+
+        // Relación con CartItem
+        public List<CartItem> Items { get; set; } = new();
+
 
     }
 }

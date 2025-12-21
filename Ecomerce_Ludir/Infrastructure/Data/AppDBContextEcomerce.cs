@@ -105,6 +105,41 @@ namespace Infrastructure.Data
                 entity.Property(u => u.IsActive).IsRequired();
             });
 
+
+            modelBuilder.Entity<CartItem>(entity =>
+            {
+                entity.ToTable("cart_items");
+                entity.HasKey(ci => ci.CartItemId);
+
+                entity.HasOne(ci => ci.Cart)
+                      .WithMany(c => c.Items)
+                      .HasForeignKey(ci => ci.CartId);
+
+                entity.HasOne(ci => ci.Product)
+                      .WithMany() // Un producto puede estar en muchos CartItems
+                      .HasForeignKey(ci => ci.ProductId);
+
+                entity.Property(ci => ci.UnitPrice).HasColumnType("numeric(10,2)");
+            });
+
+            modelBuilder.Entity<BibliotecaProduct>(entity =>
+            {
+                entity.ToTable("biblioteca_products");
+                // Clave primaria compuesta
+                entity.HasKey(bp => new { bp.BibliotecaId, bp.ProductId });
+
+                entity.HasOne(bp => bp.Biblioteca)
+                      .WithMany(b => b.BibliotecaProductos)
+                      .HasForeignKey(bp => bp.BibliotecaId);
+
+                entity.HasOne(bp => bp.Product)
+                      .WithMany()
+                      .HasForeignKey(bp => bp.ProductId);
+            });
+
+
+
+
             // Definición de relaciones
             //carrito - cliente (1-1)
             modelBuilder.Entity<Cart>()

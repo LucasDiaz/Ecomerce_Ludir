@@ -15,5 +15,7 @@ namespace Domain.Entities
         public Guid CompanyId { get; set; }
         public Company Company { get; set; }
 
+        // Relación con BibiliotecaItem
+        public List<BibliotecaProduct> BibliotecaProductos { get; set; }
     }
 }

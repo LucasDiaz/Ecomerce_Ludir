@@ -31,4 +31,17 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\IClient\" />
+    <Folder Include="Interfaces\ICompany\" />
+    <Folder Include="Interfaces\IProduct\" />
+    <Folder Include="Interfaces\ICart\" />
+    <Folder Include="Interfaces\IAdmin\" />
+    <Folder Include="Interfaces\IBiblioteca\" />
+    <Folder Include="Interfaces\IUser\" />
+    <Folder Include="Models\Response\" />
+    <Folder Include="Models\Request\" />
+    <Folder Include="Service\" />
+  </ItemGroup>
+
 </Project>
