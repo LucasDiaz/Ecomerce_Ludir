@@ -1,0 +1,32 @@
+services:
+  # Tu aplicación C# (Backend)
+  api-ludir:
+    container_name: ecommerce_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Conexión a la base de datos Postgres (usando el nombre del servicio como host)
+      - ConnectionStrings__DefaultConnection=Host=db-ludir;Port=5432;Database=EcomerceDB;Username=postgres;Password=TuPasswordSeguro123;
+    depends_on:
+      - db-ludir
+
+  # La base de datos (PostgreSQL)
+  db-ludir:
+    image: postgres:16-alpine
+    container_name: ecommerce_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=TuPasswordSeguro123
+      - POSTGRES_DB=EcomerceDB
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-ludir:/var/lib/postgresql/data
+
+volumes:
+  pgdata-ludir:

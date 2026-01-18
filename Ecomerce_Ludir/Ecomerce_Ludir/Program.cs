@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using Application.Interfaces.Generic_Repository;
+using Infrastructure.Data;
+using Infrastructure.GenericRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +19,7 @@ builder.Services.AddDbContext<AppDBContextEcomerce>(options =>
 
 
 
-
-
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 
 // Add services to the container.
